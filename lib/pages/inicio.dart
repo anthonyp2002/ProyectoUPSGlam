@@ -9,9 +9,7 @@ class Inicio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(InicioService());
 
-    // ignore: unused_local_variable
     final InicioService service = Get.find<InicioService>();
 
     return Scaffold(

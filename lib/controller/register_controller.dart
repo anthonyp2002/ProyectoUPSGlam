@@ -1,3 +1,5 @@
+import 'package:apsglam/class/user.dart';
+import 'package:apsglam/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +12,6 @@ class RegisterController {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordresetController = TextEditingController();
 
-
   RxBool isColorOne = false.obs;
   RxBool isColorTwo = false.obs;
   RxBool isColorThre = false.obs;
@@ -18,19 +19,21 @@ class RegisterController {
   RxBool isColorFive = false.obs;
 
   void submitForm(BuildContext context) {
-
     if (formKey.currentState!.validate()) {
-      print(nameController.text);
-      print(phoneController.text);
-      print(emailController.text);
-      print(passwordController.text);
-      print(passwordresetController.text);
+
+    final User usuarios = User(
+          name: nameController.text,
+          telefono: phoneController.text,
+        //  descripcion: "",
+          email: emailController.text,
+          password: passwordController.text);
+    
+    saveUser(usuarios);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Creando Cuenta')),
       );
-
-    }else{
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Rellene todos los campos')),
       );

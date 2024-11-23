@@ -1,6 +1,8 @@
+import 'package:apsglam/class/user.dart';
 import 'package:apsglam/pages/camera.dart';
 import 'package:apsglam/pages/homeinicio.dart';
 import 'package:apsglam/pages/settings.dart';
+import 'package:apsglam/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:apsglam/class/data.dart'; 
@@ -9,6 +11,7 @@ class InicioService extends GetxService {
   
   var stories = <Map<String, String>>[].obs;
   final RxList<DatosContenido> contenidoPage = <DatosContenido>[].obs;
+  RxList<User> myProfile = <User>[].obs;
 
   @override
   void onInit() {
@@ -54,6 +57,9 @@ class InicioService extends GetxService {
       ),
     ]);
 
+
+    myProfile = myUser;
+    print("El id de mi documento es $myProfile");
   }
 
   RxInt selectedIndex = 0.obs;
@@ -61,7 +67,7 @@ class InicioService extends GetxService {
   final List<Widget> pages = [
     const HomeInicio(), 
     const CameraPage(),
-    const Settings(),
+    Settings(),
   ];
 
   void changePage(int index) {

@@ -28,7 +28,7 @@ class RoutesClass {
     GetPage(name: home, page: () => Home()),
     GetPage(name: register, page: ()=>Register()),
     GetPage(name: init, page: ()=> const Inicio()),
-    GetPage(name: settings, page: ()=> const Settings()),
+    GetPage(name: settings, page: ()=>const Settings()),
     GetPage(name: homeinit, page: ()=> const HomeInicio()),
     GetPage(name: camara, page: ()=> const CameraPage()),
 

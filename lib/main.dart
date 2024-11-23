@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_core/firebase_core.dart'; // Importa Firebase
-import 'firebase_options.dart'; // Importa las opciones de configuración de Firebase
+import 'package:firebase_core/firebase_core.dart'; 
+import 'firebase_options.dart'; 
 
 import 'routes/routes.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Necesario para operaciones asíncronas en el inicio
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, // Inicializa Firebase con las opciones generadas
-  );
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform, 
+    );
+    print("Firebase inicializado correctamente");
+  } catch (e) {
+    print("Error al inicializar Firebase: $e"); // Si ocurre algún error
+  }
+  
   runApp(const MyApp());
 }
 
