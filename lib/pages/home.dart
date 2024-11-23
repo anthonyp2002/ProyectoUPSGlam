@@ -145,6 +145,7 @@ class Home extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: () {
                                 controller.submitForm(context);
+                                Get.offNamed(RoutesClass.getInicioRoute());
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color.fromARGB(
