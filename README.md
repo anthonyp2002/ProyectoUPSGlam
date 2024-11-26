@@ -60,6 +60,7 @@ Frontend
      flutter build apk --release
 
      El archivo apk se guardara en la ruta:
+   
    ![image](https://github.com/user-attachments/assets/2e4804e1-91d8-400f-80c6-071caedd63b7)
 
 
