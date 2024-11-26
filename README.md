@@ -131,6 +131,7 @@ Frontend
 
 ![Imagen de WhatsApp 2024-11-26 a las 08 03 29_16dad4a0](https://github.com/user-attachments/assets/d9adf1f0-abb4-40a8-af2b-5c993b5d1d7d)
 
+![Imagen de WhatsApp 2024-11-26 a las 16 13 33_173570da](https://github.com/user-attachments/assets/d99db197-1119-49ba-b6bc-940556f9611c)
 
 ## Conclusiones
 
