@@ -21,10 +21,12 @@ class InicioService extends GetxService {
   final RxList<DatosContenido> contenidoPage = <DatosContenido>[].obs;
   RxList<User> myProfile = <User>[].obs;
   RxList<Post> postsUser = <Post>[].obs;
+  String baseUrl = 'http://172.16.219.153:5000';
 
   var imageProcesada = "".obs;
   File? imageSave;
   File? imagePost;
+  final TextEditingController newComentario = TextEditingController();
 
   CameraController? cameraController;
   List<CameraDescription>? cameras;
@@ -32,7 +34,8 @@ class InicioService extends GetxService {
   String id = "";
   int selectedCameraIndex = 0;
   final ImagePicker _imagePicker = ImagePicker();
-
+  int meGusta =0;
+  
   final ImageProcessor imageProcessor = ImageProcessor();
   String processedImageUrl = '';
 
@@ -44,7 +47,7 @@ class InicioService extends GetxService {
   int threadsPerBlock = 16;
   String selectedFilter = 'laplace';
   bool isProcessing = false;
-
+  TextEditingController descripcionPost = TextEditingController();
   @override
   void onInit() {
     super.onInit();
@@ -81,42 +84,28 @@ class InicioService extends GetxService {
       }
     ]);
 
-    contenidoPage.addAll([
-      DatosContenido(
-        imgUrl:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKBYdyhrUsJQAl_UG692iP3LPFyPygKzAgjACWHvfpGxX-TxwHpnp3pWhrR84qTpucJ50&usqp=CAU",
-        fecha: "2024-11-21",
-        descripcion: "Otro contenido interesante.",
-        comentarios: ["Genial", "Increíble"],
-        likes: 50,
-        name: "Juan Perez",
-        profileImgUrl:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzhye46PoPBg7gcWsJjKrfDT98rIWdCZI6GA&s",
-      ),
-      DatosContenido(
-        imgUrl:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKBYdyhrUsJQAl_UG692iP3LPFyPygKzAgjACWHvfpGxX-TxwHpnp3pWhrR84qTpucJ50&usqp=CAU",
-        fecha: "2024-11-21",
-        descripcion: "Otro contenido interesante.",
-        comentarios: ["No me gusta", "Que triste"],
-        likes: 10,
-        name: "María López",
-        profileImgUrl:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzhye46PoPBg7gcWsJjKrfDT98rIWdCZI6GA&s",
-      ),
-      DatosContenido(
-        imgUrl:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKBYdyhrUsJQAl_UG692iP3LPFyPygKzAgjACWHvfpGxX-TxwHpnp3pWhrR84qTpucJ50&usqp=CAU",
-        fecha: "2024-11-21",
-        descripcion:
-            "kandukasdbfhsddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-        comentarios: ["No me gusta", "Que triste"],
-        likes: 10,
-        name: "Anthony",
-        profileImgUrl:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzhye46PoPBg7gcWsJjKrfDT98rIWdCZI6GA&s",
-      ),
-    ]);
+    cargarDatosIniciales();
+  }
+
+    Future<void> refreshData() async {
+      postsUser.clear();
+      contenidoPage.clear();
+
+      await Future.delayed(Duration(seconds: 2)); 
+      getPostUser(id);
+
+      getAllPosts().then((posts) {
+        contenidoPage.value = posts;
+      });
+
+
+    }
+
+  Future<void> cargarDatosIniciales() async {
+    
+    getAllPosts().then((posts) {
+      contenidoPage.value = posts..shuffle();
+    });
 
     myProfile = myUser;
     id = docuId;
@@ -153,9 +142,9 @@ class InicioService extends GetxService {
     }
   }
 
-void getPostUser(String id) async {
-  postsUser = await getPostsByUserId(id);  
-}
+  void getPostUser(String id) async {
+    postsUser = await getPostsByUserId(id);
+  }
 
   void disposeCamera() {
     cameraController?.dispose();
@@ -166,34 +155,33 @@ void getPostUser(String id) async {
   void subirImage(XFile image) {
     imageSave = File(image.path);
     Get.toNamed(RoutesClass.getEditRoute());
-
   }
 
-void subirPost(String imageG) async {
-  File? imagePost;
+  void subirPost(String imageG) async {
+    File? imagePost;
 
-  if (imageG == "camara") {
-    imagePost = imageSave;
-  } else if (imageG == "procesada") {
-    imagePost = await downloadImage(imageProcesada.string);
+    if (imageG == "camara") {
+      imagePost = imageSave;
+    } else if (imageG == "procesada") {
+      imagePost = await downloadImage(imageProcesada.string);
+    }
+
+    if (imagePost != null) {
+      String urlImg = await uploadImage(imagePost);
+
+      Post postUser = Post(
+          imgUrl: urlImg, descripcion: descripcionPost.text.isEmpty ? "" : descripcionPost.text, comentarios: [], likes: 0);
+
+      savePost(postUser, id);
+
+      descripcionPost.text = "";
+
+      await refreshData();
+      Get.back();
+    } else {
+      print("No se pudo descargar la imagen.");
+    }
   }
-
-  if (imagePost != null) {
-    String urlImg = await uploadImage(imagePost);
-
-    Post postUser = Post(
-      imgUrl: urlImg, 
-      descripcion: "Nuevo Post", 
-      comentarios: [], 
-      likes: 0
-    );
-
-    savePost(postUser, id);
-  } else {
-    print("No se pudo descargar la imagen.");
-  }
-}
-
 
   Future<void> pickImageFromGallery() async {
     final XFile? image =
@@ -211,10 +199,9 @@ void subirPost(String imageG) async {
     selectedIndex.value = index;
     if (index == 1) {
       await initializeCamera();
-          getPostUser(id);
+      
     } else if (cameraController != null) {
       disposeCamera();
-    getPostUser(id);
     }
   }
 
@@ -226,7 +213,7 @@ void subirPost(String imageG) async {
     stories.removeAt(index);
   }
 
-  Future<void> applyServerFilter() async {
+  Future<void> applyServerFilter(String urlServe) async {
     isProcessing = true;
     final String imagePath;
 
@@ -234,7 +221,7 @@ void subirPost(String imageG) async {
 
     try {
       var request = http.MultipartRequest(
-          'POST', Uri.parse('http://172.16.213.231:5000/upload'));
+          'POST', Uri.parse(urlServe+'/upload'));
       var pic = await http.MultipartFile.fromPath('image', imagePath);
       request.files.add(pic);
 
@@ -252,48 +239,48 @@ void subirPost(String imageG) async {
         processedImageUrl = jsonResponse['filename'];
         isProcessing = false;
 
-        print("El paht de la imagen es $processedImageUrl");
 
-        imageProcesada.value  = 'http://172.16.213.231:5000/images/$processedImageUrl';
+        imageProcesada.value =
+            urlServe+'/images/$processedImageUrl';
       } else {
         isProcessing = false;
 
         Get.snackbar('Error', 'Error al procesar la imagen.');
       }
     } catch (e) {
-      isProcessing = false; 
+      isProcessing = false;
       Get.snackbar('Error', 'No se pudo procesar la imagen: $e');
     }
   }
 
   Future<File?> downloadImage(String url) async {
-      try {
-        // Obtén la respuesta de la imagen desde la URL
-        final response = await http.get(Uri.parse(url));
+    try {
+      // Obtén la respuesta de la imagen desde la URL
+      final response = await http.get(Uri.parse(url));
 
-        if (response.statusCode == 200) {
-          // Obtén el directorio donde almacenar la imagen
-          final directory = await getApplicationDocumentsDirectory();
-          final filePath = '${directory.path}/$processedImageUrl';
-          File? file = File(filePath);
+      if (response.statusCode == 200) {
+        // Obtén el directorio donde almacenar la imagen
+        final directory = await getApplicationDocumentsDirectory();
+        final filePath = '${directory.path}/$processedImageUrl';
+        File? file = File(filePath);
 
-          // Escribe el contenido de la imagen en el archivo
-          await file.writeAsBytes(response.bodyBytes);
+        // Escribe el contenido de la imagen en el archivo
+        await file.writeAsBytes(response.bodyBytes);
 
-          print('Imagen descargada y guardada en: $filePath');
+        print('Imagen descargada y guardada en: $filePath');
 
-          // Retorna el archivo guardado
-          return file;
-        } else {
-          print('Error al descargar la imagen: ${response.statusCode}');
-          return null;
-        }
-      } catch (e) {
-        print('Error al descargar la imagen: $e');
+        // Retorna el archivo guardado
+        return file;
+      } else {
+        print('Error al descargar la imagen: ${response.statusCode}');
         return null;
       }
+    } catch (e) {
+      print('Error al descargar la imagen: $e');
+      return null;
     }
-  
+  }
+
   @override
   void onClose() {
     cameraController?.dispose();

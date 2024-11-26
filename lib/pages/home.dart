@@ -106,6 +106,7 @@ class Home extends StatelessWidget {
                                         : Colors.transparent,
                                     borderRadius: BorderRadius.circular(18)),
                                 child: TextFormField(
+                                  obscureText: true,
                                   controller: controller.passwordController,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -117,6 +118,7 @@ class Home extends StatelessWidget {
                                   decoration: const InputDecoration(
                                     border: InputBorder.none,
                                     alignLabelWithHint: false,
+                                    
                                     label: Text(
                                       "Contraseña",
                                       style: TextStyle(color: Colors.white30),

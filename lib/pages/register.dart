@@ -195,6 +195,7 @@ class Register extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(18)),
                                       child: TextFormField(
+                                        obscureText: true,
                                         controller:
                                             controller.passwordController,
                                         validator: (value) {
@@ -234,6 +235,7 @@ class Register extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(18)),
                                       child: TextFormField(
+                                        obscureText: true,
                                         controller:
                                             controller.passwordresetController,
                                         validator: (value) {

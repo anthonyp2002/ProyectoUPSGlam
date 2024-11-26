@@ -4,14 +4,17 @@ class User {
   final String name;       
   final String telefono;       
   final String email; 
-  final String password;           
-
+  final String password;      
+  final String profileImgUrl;      
+   
 
   User({
     required this.name,
     required this.telefono,
     required this.email,
     required this.password,
+    required this.profileImgUrl,
+
   });
 
   factory User.fromDocument(DocumentSnapshot doc) {
@@ -20,7 +23,7 @@ class User {
         telefono: doc["phone"],
         password: doc["password"],
         email: doc['email'],
-//        urlImage: doc['urlImage']
+        profileImgUrl: doc['profileImgUrl'],
    );
   }
 }

@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:apsglam/class/data.dart';
 import 'package:apsglam/class/post.dart';
 import 'package:apsglam/class/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 FirebaseFirestore db = FirebaseFirestore.instance;
@@ -11,11 +13,11 @@ FirebaseStorage storage = FirebaseStorage.instance;
 String docuId = "";
 RxList<User> myUser = <User>[].obs;
 
-Future<bool> verificarCredenciales(String name, String password) async {
+Future<bool> verificarCredenciales(String email, String password) async {
   try {
     QuerySnapshot userSnapshot = await FirebaseFirestore.instance
         .collection('User')
-        .where('name', isEqualTo: name)
+        .where('email', isEqualTo: email)
         .where('password', isEqualTo: password)
         .get();
 
@@ -41,6 +43,8 @@ Future<void> saveUser(User use) async {
     "email": use.email,
     "password": use.password
   });
+
+  await verificarCredenciales(use.email,use.password);
 }
 
 Future<String> uploadImage(File image) async {
@@ -65,19 +69,26 @@ Future<void> savePost(Post post, String id) async {
 }
 
 
-Future<List<QueryDocumentSnapshot>> getAllPosts() async {
-  List<QueryDocumentSnapshot> allPosts = [];
+Future<List<DatosContenido>> getAllPosts() async {
+  List<DatosContenido> allPosts = [];
 
   try {
     QuerySnapshot userCollection = await FirebaseFirestore.instance.collection('User').get();
 
-    // Recorre cada documento en 'User' para acceder a su subcolección 'Post'
     for (var userDoc in userCollection.docs) {
-      // Obtén los documentos de la subcolección 'Post' de cada usuario
+      // Obtén los datos del usuario
+      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+      String userName = userData['name'] ?? 'Desconocido'; // Campo "name" del usuario
+      String userProfileImgUrl = userData['profileImgUrl'] ?? ''; // Campo "profileImgUrl" del usuario
+
       QuerySnapshot postCollection = await userDoc.reference.collection('Post').get();
 
-      // Agrega los documentos de 'Post' a la lista de todos los posts
-      allPosts.addAll(postCollection.docs);
+      for (var postDoc in postCollection.docs) {
+        // Construye el objeto DatosContenido
+        DatosContenido post = DatosContenido.fromDocument(postDoc)
+            .copyWith(name: userName, profileImgUrl: userProfileImgUrl);
+        allPosts.add(post);
+      }
     }
   } catch (e) {
     print('Error al obtener los posts: $e');
@@ -85,6 +96,67 @@ Future<List<QueryDocumentSnapshot>> getAllPosts() async {
 
   return allPosts;
 }
+
+
+Future<void> editCommentsByImgUrl(BuildContext context,String imgUrl, List<String> newComments) async {
+  try {
+    // Obtén todas las colecciones de usuarios
+    QuerySnapshot userCollection =
+        await FirebaseFirestore.instance.collection('User').get();
+
+    // Recorre cada documento de usuario
+    for (var userDoc in userCollection.docs) {
+      // Accede a la subcolección "Post" del usuario
+      QuerySnapshot postCollection = await userDoc.reference
+          .collection("Post")
+          .where("imgUrl", isEqualTo: imgUrl)
+          .get();
+
+      // Actualiza los comentarios de los posts que coincidan con el imgUrl
+      for (var postDoc in postCollection.docs) {
+        await postDoc.reference.update({
+          "comentarios": newComments,
+        });
+      }
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Comentarios guardado con exito.')),
+      );
+  } catch (e) {
+     ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error.')),
+      );
+  }
+}
+
+Future<void> editLikesByImgUrl(String imgUrl, int newLikeCount) async {
+  try {
+    // Obtén todas las colecciones de usuarios
+    QuerySnapshot userCollection =
+        await FirebaseFirestore.instance.collection('User').get();
+
+    // Recorre cada documento de usuario
+    for (var userDoc in userCollection.docs) {
+      // Accede a la subcolección "Post" del usuario
+      QuerySnapshot postCollection = await userDoc.reference
+          .collection("Post")
+          .where("imgUrl", isEqualTo: imgUrl)
+          .get();
+
+      // Actualiza los likes de los posts que coincidan con el imgUrl
+      for (var postDoc in postCollection.docs) {
+        await postDoc.reference.update({
+          "likes": newLikeCount,
+        });
+      }
+    }
+    print("Likes actualizados con éxito.");
+  } catch (e) {
+    print("Error al actualizar los likes: $e");
+  }
+}
+
+
 
 RxList<Post> getPostsByUserId(String userId) {
   RxList<Post> userPosts = <Post>[].obs;

@@ -1,3 +1,4 @@
+import 'package:apsglam/pages/addres.dart';
 import 'package:http/http.dart' as http;
 
 class ImageProcessor {
@@ -9,7 +10,7 @@ class ImageProcessor {
     double reliefFactor = 2.0,
     int threadsPerBlock = 16,
   }) async {
-    final uri = Uri.parse('http://172.16.213.231:5000/process');
+    final uri = Uri.parse('$baseUrl/process');
     final request = http.MultipartRequest('POST', uri);
 
     // Adjuntar la imagen
@@ -29,7 +30,7 @@ class ImageProcessor {
 
     if (response.statusCode == 200) {
       final responseData = await response.stream.bytesToString();
-      return 'http://172.16.213.231:5000/images/$responseData';
+      return '$baseUrl/images/$responseData';
     } else {
       throw Exception('Error al procesar la imagen: ${response.reasonPhrase}');
     }

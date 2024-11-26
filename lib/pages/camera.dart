@@ -39,7 +39,7 @@ class _CameraPageState extends State<CameraPage> {
           width: 200,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Colors.blueAccent,
+            color: const Color.fromARGB(255, 63, 183, 169),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -49,6 +49,8 @@ class _CameraPageState extends State<CameraPage> {
                 onPressed: () {
                   inicioService.switchCamera();
                 },
+                color: Colors.white,
+
               ),
               const Padding(padding: EdgeInsets.only(left: 20)),
               IconButton(
@@ -63,6 +65,7 @@ class _CameraPageState extends State<CameraPage> {
                     inicioService.subirImage(image);
                   }
                 },
+                color: Colors.white,
               ),
               const Padding(padding: EdgeInsets.only(left: 20)),
               IconButton(
@@ -70,7 +73,10 @@ class _CameraPageState extends State<CameraPage> {
                 onPressed: () async {
                   inicioService.pickImageFromGallery();
                 },
+                color: Colors.white,
+
               ),
+              const Padding(padding: EdgeInsets.only(top: 20))
             ],
           ),
        ) )
