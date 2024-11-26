@@ -77,7 +77,42 @@ Backend
 5. Correr el servidor:
    
     python app.py
+
+Dockerización:
+1. Crea un archivo DockerFile:
+# Usar la imagen base de CUDA con soporte para cuDNN y Ubuntu 22.04
+FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+
+# Actualizar paquetes y configurar Python con dependencias necesarias
+RUN apt-get -qq update && \
+    apt-get -qq install -y build-essential python3-pip && \
+    pip3 install flask pycuda numpy
+
+# Crear directorio para la aplicación y copiar los archivos del proyecto
+WORKDIR /app
+COPY . /app
+
+# Establecer el archivo principal como punto de entrada
+# Exponer el puerto para la aplicación Flask
+EXPOSE 5000
+
+# Comando para iniciar el servidor, ajustado para la ruta correcta de app.py
+CMD ["python3", "/app/ProyectoUPSGlam/app.py"]
+
+#docker build -t upsglam_imagen .
+#docker run -p 5000:5000 --gpus all upsglam_imagen
+
+2. Ejecuta el comando 
+   docker build -t nombreDelContenedor .
    
+4. Ejecuta el comando
+   docker run -p 5000:5000 --gpus all upsglam_imagen
+
+# Docker creado:
+![image](https://github.com/user-attachments/assets/0e05faed-cc0e-4134-a4e1-7baa1254c2b3)
+
+
+
 ## Resultados
 ![Imagen de WhatsApp 2024-11-25 a las 21 35 34_2ee798ee](https://github.com/user-attachments/assets/ef54696e-9215-47ee-acee-b677c94083ad)
 
