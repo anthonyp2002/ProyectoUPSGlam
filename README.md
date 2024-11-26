@@ -80,6 +80,7 @@ Backend
 
 Dockerización:
 1. Crea un archivo DockerFile:
+   
     Usar la imagen base de CUDA con soporte para cuDNN y Ubuntu 22.04
     FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
     
@@ -102,7 +103,7 @@ Dockerización:
     #docker build -t upsglam_imagen .
     #docker run -p 5000:5000 --gpus all upsglam_imagen
 
-2. Ejecuta el comando 
+3. Ejecuta el comando 
    docker build -t nombreDelContenedor .
    
 4. Ejecuta el comando
