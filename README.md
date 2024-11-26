@@ -59,7 +59,7 @@ Frontend
    
      flutter build apk
 
-Backend
+# Backend
 1. Clona el repositorio y navega a la carpeta del backend:
    
     git clone https://github.com/usuario/UPSGlam.git
@@ -78,7 +78,7 @@ Backend
    
     python app.py
 
-Dockerización:
+# Dockerización:
 1. Crea un archivo DockerFile:
    
     Usar la imagen base de CUDA con soporte para cuDNN y Ubuntu 22.04
