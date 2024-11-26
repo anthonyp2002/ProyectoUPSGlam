@@ -103,10 +103,12 @@ Frontend
     #docker build -t upsglam_imagen .
     #docker run -p 5000:5000 --gpus all upsglam_imagen
 
-3. Ejecuta el comando 
+3. Ejecuta el comando
+   
    docker build -t nombreDelContenedor .
    
-4. Ejecuta el comando
+5. Ejecuta el comando
+   
    docker run -p 5000:5000 --gpus all upsglam_imagen
 
 # Docker creado:
