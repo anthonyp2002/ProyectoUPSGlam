@@ -41,15 +41,61 @@ Future<void> saveUser(User use) async {
     "name": use.name,
     "phone": use.telefono,
     "email": use.email,
-    "password": use.password
+    "password": use.password,
+    "profileImgUrl": use.profileImgUrl
   });
 
   await verificarCredenciales(use.email,use.password);
 }
 
+Future<User?> getUserById(String userId) async {
+  myUser.clear();
+  var userDoc = await FirebaseFirestore.instance.collection("User").doc(userId).get();
+
+  if (userDoc.exists) {
+    // Si el documento existe, devolvemos un objeto User
+    myUser.add(User.fromDocument(userDoc));
+    return User.fromDocument(userDoc);
+  } else {
+    // Si no existe el documento, retornamos null
+    print("Usuario no encontrado.");
+    return null;
+  }
+}
+
+
+Future<void> updateProfileImageById(String userId, String newProfileImgUrl) async {
+  // Usamos el ID del documento para acceder directamente al documento del usuario
+  var userDoc = await db.collection("User").doc(userId).get();
+
+  if (userDoc.exists) {
+    // Si existe el documento, actualizamos solo el campo de la imagen
+    await db.collection("User").doc(userId).update({
+      "profileImgUrl": newProfileImgUrl,
+    });
+  } else {
+    // Si no se encuentra el documento, puedes manejar el error o agregar un mensaje
+    print("Usuario no encontrado.");
+  }
+}
+
+
+
 Future<String> uploadImage(File image) async {
   String namefile = image.path.split("/").last;
   final Reference ref = storage.ref().child("Post").child(namefile);
+  final UploadTask uploadTask = ref.putFile(image);
+
+  final TaskSnapshot snapshot = await uploadTask.whenComplete(() => true);
+
+  final String url = await snapshot.ref.getDownloadURL();
+
+  return url;
+}
+
+Future<String> uploadImageUser(File image) async {
+  String namefile = image.path.split("/").last;
+  final Reference ref = storage.ref().child("Perfil").child(namefile);
   final UploadTask uploadTask = ref.putFile(image);
 
   final TaskSnapshot snapshot = await uploadTask.whenComplete(() => true);

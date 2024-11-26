@@ -25,12 +25,18 @@ class Settings extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 20),
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(
-                        'https://w7.pngwing.com/pngs/733/160/png-transparent-computer-icons-upload-youtube-icon-upload-miscellaneous-photography-sign-thumbnail.png',
-                      ),
-                    ),
+                     GestureDetector(
+                      onTap: () {
+                        service.pickImageFromGalleryUser();
+                      },
+                       child: CircleAvatar(
+                        
+                        radius: 50,
+                        backgroundImage: NetworkImage(
+                          item.profileImgUrl
+                        ),
+                                           ),
+                     ),
                     const SizedBox(height: 8),
                     Text(
                       item.name,

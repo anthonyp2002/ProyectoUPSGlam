@@ -25,6 +25,8 @@ class InicioService extends GetxService {
 
   var imageProcesada = "".obs;
   File? imageSave;
+  File? imageSaveUser;
+
   File? imagePost;
   final TextEditingController newComentario = TextEditingController();
 
@@ -99,6 +101,11 @@ class InicioService extends GetxService {
       });
 
 
+    }
+
+    Future<void> refreshDataUser() async {
+      myProfile.clear();
+      myProfile = myUser;
     }
 
   Future<void> cargarDatosIniciales() async {
@@ -192,6 +199,20 @@ class InicioService extends GetxService {
       Get.toNamed(
         RoutesClass.getEditRoute(),
       );
+    }
+  }
+
+  Future<void> pickImageFromGalleryUser() async {
+    final XFile? image =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      imageSaveUser = File(image.path);
+      File? imagePost = imageSaveUser;
+      if (imagePost != null) {
+        String urlImg = await uploadImageUser(imagePost);
+        updateProfileImageById(id,urlImg);
+        refreshDataUser();
+      }
     }
   }
 
