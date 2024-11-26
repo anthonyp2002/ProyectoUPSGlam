@@ -14,7 +14,7 @@ El objetivo es ofrecer una plataforma social que permita:
 
 ## Arquitectura del Proyecto
 
-![UPSGlam drawio](https://github.com/user-attachments/assets/b0ecae19-dfa2-466e-9fab-49a5c40103ac)
+![UPSGlam drawio](https://github.com/user-attachments/assets/4e2f1183-0b9b-4b89-9a3d-d1b9778be2fd)
 
 ## Filtros de Convolución Implementados
 - Filtro LAPLACE:
@@ -88,6 +88,6 @@ Backend
 ![Imagen de WhatsApp 2024-11-26 a las 08 03 29_16dad4a0](https://github.com/user-attachments/assets/d9adf1f0-abb4-40a8-af2b-5c993b5d1d7d)
 
 
-## Consluiones
+## Conclusiones
 
 Como conclusión, UPSGlam representa una combinación innovadora de creatividad técnica y funcionalidad práctica, destacándose como una plataforma que integra redes sociales con procesamiento gráfico avanzado mediante el uso de filtros personalizados implementados con PyCUDA. El proyecto logró superar importantes desafíos, como la implementación eficiente de algoritmos de convolución, la integración fluida entre el frontend desarrollado en Flutter, el backend basado en Flask y PyCUDA, y el almacenamiento en Firebase. A futuro, se plantea la posibilidad de implementar filtros en tiempo real y optimizar la aplicación para dispositivos iOS, con el objetivo de expandir su alcance y mejorar la experiencia del usuario.
