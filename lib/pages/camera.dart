@@ -3,8 +3,15 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CameraPage extends StatelessWidget {
+
+class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
+
+  @override
+  _CameraPageState createState() => _CameraPageState();
+}
+
+class _CameraPageState extends State<CameraPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +73,6 @@ class CameraPage extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
+       ) )
+  );}
 }
